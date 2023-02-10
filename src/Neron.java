@@ -31,24 +31,25 @@ public class Neron {
     private static void two() {
         int inputs = 3;
         int hidenSizeNeurons = 4;
-        double[][] weights0_1 = randomWeights(inputData[0].length, inputs);
-        double[][] weights1_2 = randomWeights(hidenSizeNeurons, 1);
+        double[] weights0_1 = randomWeights(hidenSizeNeurons * inputs);
+        double[] weights1_2 = randomWeights(hidenSizeNeurons * 1);
         System.out.println("--------------------------------------------------------------------------------------------");
 
-        for (int i = 0; i < 60; i++){
+        for (int i = 0; i < 1; i++) {
             double layer2Error = 0;
-            for(int j = 0; j < inputData.length; j++){
+            for (int j = 0; j < inputData.length; j++) {
                 double[] layer0 = inputData[j];
-                double[] layer1 = multiLayer_weight(layer0, weights0_1);//умножаем входы на веса первого слоя
+                double[] layer1 = multiLayer_weight(layer0, weights0_1, hidenSizeNeurons);//умножаем входы на веса первого слоя
                 layer1 = relu(layer1); //возвращает x если значение больше нуля иначе 0
-           //     double[] layer2 = multiLayer_weight(layer1, weights1_2);
+                System.out.println("*****************************************");
+              //  double[] layer2 = multiLayer_weight(layer1, weights1_2, 1);
             }
         }
     }
 
     private static double[] relu(double[] layer) {
         System.out.println(layer.length);
-        for (double i: layer) {
+        for (double i : layer) {
             if (i < 0) i = 0;
             System.out.println("relu " + i);
         }
@@ -56,34 +57,38 @@ public class Neron {
         return layer;
     }
 
-    private static double[][] randomWeights(int column, int row) {
+    private static double[] randomWeights(int size) {
         Random random = new Random();
-        double matrixRes[][] = new double[row][column];
+        double matrixRes[] = new double[size];
 
         for (int i = 0; i < matrixRes.length; i++) {
-            for (int j = 0; j < matrixRes[0].length; j++) {
-                double rDigit = random.nextDouble();
-                double scale = Math.pow(10, 2); //2 нужное количество знаков после запятой
-                rDigit = Math.ceil(rDigit * scale)/scale;
-                matrixRes[i][j] = rDigit;
-            }
+            double rDigit = random.nextDouble();
+            double scale = Math.pow(10, 2); //2 нужное количество знаков после запятой
+            rDigit = Math.ceil(rDigit * scale) / scale;
+            matrixRes[i] = rDigit;
         }
 
-        System.out.println(Arrays.deepToString(matrixRes));
+        System.out.println(Arrays.toString(matrixRes));
         return matrixRes;
     }
 
-    private static double[] multiLayer_weight(double[] layer, double[][] weights) {
-        double[] res = new double[layer.length];
-        System.out.println("lenth layer " + layer.length + " weight " + weights.length);
-        System.out.println(Arrays.toString(layer) +" - " +Arrays.deepToString(weights));
-        for (int i = 0; i < res.length; i++) {
-            System.out.println("i =  " + i );
-            for (int j = 0; j < weights.length; j++) {
-                System.out.println(weights[i][j] + " * " + layer[i]+" j = "+j);
-                res[i] += layer[i] * weights[i][j];
+    private static double[] multiLayer_weight(double[] layer, double[] weights, int size) {
+        double[] res = new double[size];
+        System.out.println("lenth layer " + layer.length + " weight " + weights.length + " res " + res.length);
+        System.out.println(Arrays.toString(layer) + " - " + Arrays.toString(weights));
+        int start = 0;
 
+
+        for (int i = 0; i < res.length;i++) {
+            int off = start + size-1;
+            System.out.println("i =  " + i + "start " + start + " off " +off);
+
+            for (int k = start; k < off ; k++) {
+                System.out.println(weights[k] + " * " + layer[i] + " k = " + k);
+                res[i] += layer[i] * weights[k];
             }
+
+            start = start + weights.length / size;
             System.out.println("=========");
         }
 
