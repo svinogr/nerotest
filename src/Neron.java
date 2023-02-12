@@ -39,21 +39,25 @@ public class Neron {
             double layer2Error = 0;
             for (int j = 0; j < inputData.length; j++) {
                 double[] layer0 = inputData[j];
-                double[] layer1 = multiLayer_weight(layer0, weights0_1, hidenSizeNeurons);//умножаем входы на веса первого слоя
+                System.out.println("***************OneLayer(input)**************************");
+                double[] layer1 = multiInputsWithWeights(layer0, weights0_1, hidenSizeNeurons);//умножаем входы на веса первого слоя
                 layer1 = relu(layer1); //возвращает x если значение больше нуля иначе 0
                 System.out.println("*****************************************");
-              //  double[] layer2 = multiLayer_weight(layer1, weights1_2, 1);
+                System.out.println("***************HidenLayer(input)**************************");
+                double[] layer2 = multiInputsWithWeights(layer1, weights1_2, 1);
             }
         }
     }
 
     private static double[] relu(double[] layer) {
+        System.out.println("******************Relu***********************");
         System.out.println(layer.length);
         for (double i : layer) {
             if (i < 0) i = 0;
             System.out.println("relu " + i);
         }
         System.out.println(Arrays.toString(layer));
+        System.out.println("***********************");
         return layer;
     }
 
@@ -71,31 +75,65 @@ public class Neron {
         System.out.println(Arrays.toString(matrixRes));
         return matrixRes;
     }
-
-    private static double[] multiLayer_weight(double[] layer, double[] weights, int size) {
-        double[] res = new double[size];
-        System.out.println("lenth layer " + layer.length + " weight " + weights.length + " res " + res.length);
-        System.out.println(Arrays.toString(layer) + " - " + Arrays.toString(weights));
+    private static double[] multiInputsWithWeights(double[] inputs, double[] weights, int outputSize) {
+        System.out.println("*************multiInputsWithWeights*************");
+        double[] output = new double[outputSize];
+        System.out.println("lenth layer " + inputs.length + " weight " + weights.length + " res " + output.length);
+        System.out.println(Arrays.toString(inputs) + " - " + Arrays.toString(weights));
         int start = 0;
+        int stepFor = weights.length / inputs.length;
+        int off = 0;
+        System.out.println("step = " + stepFor);
 
-
-        for (int i = 0; i < res.length;i++) {
-            int off = start + size-1;
-            System.out.println("i =  " + i + "start " + start + " off " +off);
+        for (int i = 0; i < output.length;i++) {
+            if (start >= weights.length) break;
+            off = start + stepFor;
 
             for (int k = start; k < off ; k++) {
-                System.out.println(weights[k] + " * " + layer[i] + " k = " + k);
-                res[i] += layer[i] * weights[k];
+                System.out.println("start=" + start + " off=" + off+ " k=" + k);
+                System.out.println(weights[k] + " * " + inputs[i] );
+                output[i] += inputs[i] * weights[k];
             }
 
-            start = start + weights.length / size;
+            start = start + stepFor;
             System.out.println("=========");
         }
 
-        System.out.println(Arrays.toString(res));
+        System.out.println("output=" + Arrays.toString(output));
         System.out.println("*********************************************************************************");
-        return res;
+        return output;
     }
+
+/*
+    private static double[] multiInputsWithWeights(double[] inputs, double[] weights, int outputSize) {
+        System.out.println("*************multiInputsWithWeights*************");
+        double[] output = new double[outputSize];
+        System.out.println("lenth layer " + inputs.length + " weight " + weights.length + " res " + output.length);
+        System.out.println(Arrays.toString(inputs) + " - " + Arrays.toString(weights));
+        int start = 0;
+        int stepFor = weights.length / inputs.length;
+        int off = 0;
+        System.out.println("step = " + stepFor);
+
+        for (int i = 0; i < output.length;i++) {
+            if (start >= weights.length) break;
+             off = start + stepFor;
+
+            for (int k = start; k < off ; k++) {
+                System.out.println("start=" + start + " off=" + off+ " k=" + k);
+                System.out.println(weights[k] + " * " + inputs[i] );
+                output[i] += inputs[i] * weights[k];
+            }
+
+            start = start + stepFor;
+            System.out.println("=========");
+        }
+
+        System.out.println("output=" + Arrays.toString(output));
+        System.out.println("*********************************************************************************");
+        return output;
+    }
+*/
 
     private static void one() {
         double inputOne[] = inputData[0];
