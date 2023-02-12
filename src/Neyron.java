@@ -34,11 +34,9 @@ public class Neyron {
 
     public double getValue() {
         if (this.inputs != null) {
+            value = 0;
             for (Neyron input : inputs) {
-
                 value += input.weights.get(number) * input.getValue();
-
-
             }
         } else return value;
 
@@ -77,6 +75,10 @@ public class Neyron {
         this.weights = weights;
     }
 
+    public void setValue(double value) {
+        this.value = value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,6 +98,7 @@ public class Neyron {
                 "nameOfLayer='" + nameOfLayer + '\'' +
                 ", number=" + number +
                 ", value=" + getValue() +
+                ", weights[" + Arrays.toString(weights.toArray())+"]"+
                 '}';
     }
 }
